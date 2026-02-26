@@ -1,9 +1,10 @@
 // axios/axios.js
 
 import axios from "axios";
+import { API_URL } from "../config/api"
 
 const api = axios.create({
-  baseURL: "http://192.168.137.1:5000/api/", // Atualize esta URL conforme necessário
+  baseURL: API_URL, // Atualize esta URL conforme necessário
   headers: {
     Accept: "application/json",
   },
@@ -13,7 +14,7 @@ const sheets = {
   // Usuários
   createUser: (user) => api.post("/createUser", user),
   postLogin: (data) => api.post("/login", data),
-  getUsers: () => api.get("users"),
+  getUsers: () => api.get("/users"),
   updateUser: (id, updatedData) => api.put(`/updateUser/${id}`, updatedData),
   deleteUser: (id) => api.delete(`/deleteUser/${id}`),
 
