@@ -67,7 +67,7 @@ A aplicação consome uma API REST responsável pelo gerenciamento de usuários,
 
 ## APK / Download 📦
 
-- APK: [link]
+- APK: [Download da versão v1.0.0](https://github.com/vinizamara/ScheduleWell_Front/releases/tag/v1.0.0)
 
 ### Instalação
 
@@ -96,8 +96,6 @@ A aplicação consome uma API REST responsável pelo gerenciamento de usuários,
   <img src="./assets/readmeImages/controleFinanceiro.jpeg" width="30%"/>
 </p>
 
----
-
 ## Como Rodar o Projeto 🚀
 
 ### Pré-requisitos
@@ -120,26 +118,6 @@ npm install
 npx expo start
 ```
 
-## Autor 👨‍💻
-
-### - Vinícius Manfrin Zamara
-
-<div align="left">
-
-  <a href="https://github.com/vinizamara" target="_blank">
-    <img src="https://img.shields.io/static/v1?message=GitHub%20%7C%20vinizamara&logo=github&label=&color=181717&logoColor=white&style=for-the-badge" height="35" alt="github logo" />
-  </a>
-
-  <a href="https://www.linkedin.com/in/viniciusmanfrin/" target="_blank">
-    <img src="https://img.shields.io/static/v1?message=LinkedIn%20%7C%20Vin%C3%ADcius%20Manfrin&logo=linkedin&label=&color=0077B5&logoColor=white&style=for-the-badge" height="35" alt="linkedin logo" />
-  </a>
-
-  <a href="mailto:vinizamara@gmail.com" target="_blank">
-    <img src="https://img.shields.io/static/v1?message=Gmail%20%7C%20vinizamara@gmail.com&logo=gmail&label=&color=D14836&logoColor=white&style=for-the-badge" height="35" alt="gmail logo" />
-  </a>
-
-</div>
-
 ## Contributors 👥
 
 Este projeto foi desenvolvido em equipe durante a fase acadêmica no SENAI.
@@ -150,7 +128,7 @@ Os colaboradores abaixo participaram diretamente do desenvolvimento original (re
 
   <h3>- Gabriel Santos Magalhães</h3>
   <a href="https://gitlab.com/gabrielsantosmagalhaesx" target="_blank">
-    <img src="https://img.shields.io/static/v1?message=Gabriel%20Santos%20Magalhães&label=&color=FC6D26&logo=gitlab&logoColor=white&style=for-the-badge" height="35" />
+    <img src="https://img.shields.io/static/v1?message=Gabriel%20Santos%20Magalh%C3%A3es&label=&color=FC6D26&logo=gitlab&logoColor=white&style=for-the-badge" height="35" />
   </a>
 
   <h3>- Maria Laura Reis Furini</h3>
@@ -181,6 +159,26 @@ Os colaboradores abaixo participaram diretamente do desenvolvimento original (re
   <h3>- Leonardo Pereira Gonçalves</h3>
   <a href="https://gitlab.com/leonardopgoncaves" target="_blank">
     <img src="https://img.shields.io/static/v1?message=Leonardo%20Pereira%20Gon%C3%A7alves&label=&color=FC6D26&logo=gitlab&logoColor=white&style=for-the-badge" height="35" />
+  </a>
+
+</div>
+
+## Autor 👨‍💻
+
+### - Vinícius Manfrin Zamara
+
+<div align="left">
+
+  <a href="https://github.com/vinizamara" target="_blank">
+    <img src="https://img.shields.io/static/v1?message=GitHub%20%7C%20vinizamara&logo=github&label=&color=181717&logoColor=white&style=for-the-badge" height="35" alt="github logo" />
+  </a>
+
+  <a href="https://www.linkedin.com/in/viniciusmanfrin/" target="_blank">
+    <img src="https://img.shields.io/static/v1?message=LinkedIn%20%7C%20Vin%C3%ADcius%20Manfrin&logo=linkedin&label=&color=0077B5&logoColor=white&style=for-the-badge" height="35" alt="linkedin logo" />
+  </a>
+
+  <a href="mailto:vinizamara@gmail.com" target="_blank">
+    <img src="https://img.shields.io/static/v1?message=Gmail%20%7C%20vinizamara@gmail.com&logo=gmail&label=&color=D14836&logoColor=white&style=for-the-badge" height="35" alt="gmail logo" />
   </a>
 
 </div>
