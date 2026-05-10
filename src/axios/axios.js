@@ -1,7 +1,8 @@
 import axios from "axios";
+import { URL_API } from "../../config/URL_API";
 
 const api = axios.create({
-  baseURL: "https://schedulewell-api.onrender.com/api", // Remover espaço extra
+  baseURL: URL_API,
   headers: {
     Accept: "application/json",
   },
