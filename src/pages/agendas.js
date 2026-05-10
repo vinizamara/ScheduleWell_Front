@@ -62,7 +62,12 @@ export default function Escolhanotas() {
       const response = await sheets.listarFinancas(idUsuario);
       setFinancas(response.data);
     } catch (error) {
-      console.log("Erro ao buscar finanças:", error.response.data.message);
+      console.log(
+        "Erro ao buscar finanças:",
+        error.response?.data?.message
+      );
+
+      setFinancas([]);
     }
   };
 
@@ -71,7 +76,12 @@ export default function Escolhanotas() {
       const response = await sheets.getNota(idUsuario);
       setAnotacoes(response.data);
     } catch (error) {
-      console.log("Erro ao buscar notas:", error.response.data.message);
+      console.log(
+        "Erro ao buscar notas:",
+        error.response?.data?.message
+      );
+
+      setAnotacoes([]);
     }
   };
 
@@ -80,7 +90,12 @@ export default function Escolhanotas() {
       const response = await sheets.getChecklists(idUsuario);
       setChecklists(response.data);
     } catch (error) {
-      console.log("Erro ao buscar checklists:", error.response.data.message);
+      console.log(
+        "Erro ao buscar checklists:",
+        error.response?.data?.message
+      );
+
+      setChecklists([]);
     }
   };
 
@@ -153,56 +168,79 @@ export default function Escolhanotas() {
   const handleDeleteItem = async (id, type) => {
     let deleteFunction;
     let setStateFunction;
+    let campoId;
 
     switch (type) {
       case "financa":
-        deleteFunction = sheets.deletarFinanca; // Função para deletar finanças
-        setStateFunction = setFinancas; // Função para atualizar o estado de finanças
+        deleteFunction = sheets.deletarFinanca;
+        setStateFunction = setFinancas;
+        campoId = "id_financa";
         break;
+
       case "anotacao":
-        deleteFunction = sheets.deleteNota; // Função para deletar anotações
-        setStateFunction = setAnotacoes; // Função para atualizar o estado de anotações
+        deleteFunction = sheets.deleteNota;
+        setStateFunction = setAnotacoes;
+        campoId = "id_anotacao";
         break;
+
       case "checklist":
-        deleteFunction = sheets.deleteChecklist; // Função para deletar checklists
-        setStateFunction = setChecklists; // Função para atualizar o estado de checklists
+        deleteFunction = sheets.deleteChecklist;
+        setStateFunction = setChecklists;
+        campoId = "id_checklist";
         break;
+
       default:
-        console.error("Tipo inválido para exclusão:", type);
+        console.error("Tipo inválido:", type);
         return;
     }
 
     Alert.alert(
-      `Deletar ${type.charAt(0).toUpperCase() + type.slice(1)}`,
+      `Deletar ${type}`,
       `Tem certeza que deseja deletar essa ${type}?`,
       [
-        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+
         {
           text: "Deletar",
+
           onPress: async () => {
             try {
-              await deleteFunction(id); // Chama a função de deleção
-              Alert.alert(
-                "Sucesso",
-                `${
-                  type.charAt(0).toUpperCase() + type.slice(1)
-                } deletada com sucesso.`
+              await deleteFunction(id);
+
+              const idUsuario =
+                await AsyncStorage.getItem(
+                  "userId"
+                );
+
+              await listarFinancas(idUsuario);
+
+              await listarAnotacoes(idUsuario);
+
+              await listarChecklists(idUsuario);
+
+              setResultados((prevResultados) =>
+                prevResultados.filter(
+                  (item) => item.id !== id
+                )
               );
 
-              // Atualiza a lista removendo o item deletado
-              setStateFunction((prevItems) =>
-                prevItems.filter((item) => {
-                  if (type === "financa") return item.id_financa !== id; // Verifica pelo ID de finanças
-                  if (type === "anotacao") return item.id_anotacao !== id; // Verifica pelo ID de anotações
-                  if (type === "checklist") return item.id_checklist !== id; // Verifica pelo ID de checklists
-                })
+              Alert.alert(
+                "Sucesso",
+                `${type} deletada com sucesso.`
               );
             } catch (error) {
               console.error(
                 `Erro ao deletar ${type}:`,
-                error.response?.data?.message.error
+                error
               );
-              Alert.alert("Erro", `Ocorreu um erro ao deletar a ${type}.`);
+
+              Alert.alert(
+                "Erro",
+                `Erro ao deletar ${type}.`
+              );
             }
           },
         },
@@ -323,17 +361,6 @@ export default function Escolhanotas() {
             </Text>
           )}
 
-        {/* Botão para abrir o modal
-        <Button
-          title="Abrir Modal de Busca"
-          onPress={() => {
-            setTitulos("");
-            setResultados([]);
-            setModalVisible(true);
-          }}
-        /> */}
-
-        {/* Modal */}
         {/* Modal */}
         <Modal
           animationType="slide"
@@ -342,96 +369,83 @@ export default function Escolhanotas() {
           onRequestClose={() => setModalVisible(false)}
         >
           <View style={styles.modalContainer}>
-            <ScrollView style={styles.modalContent}>
-              <Text style={styles.notesText}>Pesquisar</Text>
-              {/* Campo de busca de títulos */}
-              <View>
-                <TextInput
-                  value={titulos}
-                  onChangeText={setTitulos}
-                  placeholder="Digite o título"
-                  style={styles.Botão_de_pesquisa}
-                />
-                <TouchableOpacity
-                  title="Buscar"
-                  onPress={() => TitulosSemelhantes(titulos)}
-                  style={styles.saveButton}
-                >
-                  <Text style={styles.footerText}>Buscar</Text>
-                </TouchableOpacity>
-              </View>
+            <View style={styles.modalContent}>
 
+              <Text style={styles.modalTitle}>
+                Pesquisar Transações
+              </Text>
+
+              <TextInput
+                value={titulos}
+                onChangeText={setTitulos}
+                placeholder="Digite o título"
+                placeholderTextColor="#777"
+                style={styles.searchInput}
+              />
+
+              <TouchableOpacity
+                style={styles.searchButtonModal}
+                onPress={() => TitulosSemelhantes(titulos)}
+              >
+                <Text style={styles.searchButtonText}>
+                  Buscar
+                </Text>
+              </TouchableOpacity>
+
+              {/* Resultados */}
               {resultados.length > 0 ? (
-                <View style={styles.resultadosContainer}>
-                  <Text style={styles.resultadoText}>Resultados da busca:</Text>
+                <ScrollView style={styles.resultsContainer}>
                   {resultados.map((resultado, index) => (
                     <TouchableOpacity
                       key={index}
-                      style={styles.financaContainer}
+                      style={styles.resultItem}
                       onPress={() => {
-                        // Verifica o tipo de nota e redireciona para a página de edição correspondente
                         if (resultado.tipo === "financa") {
-                          navigation.navigate("EditarFinanca", {
-                            id: resultado.id,
-                          });
-                          setModalVisible(false);
+                          navigation.navigate("EditarFinanca", { id: resultado.id });
                         } else if (resultado.tipo === "anotacao") {
-                          navigation.navigate("EditarAnotacao", {
-                            id: resultado.id,
-                          });
-                          setModalVisible(false);
+                          navigation.navigate("EditarAnotacao", { id: resultado.id });
                         } else if (resultado.tipo === "checklist") {
-                          navigation.navigate("EditarChecklist", {
-                            id: resultado.id,
-                          });
-                          setModalVisible(false);
+                          navigation.navigate("EditarChecklist", { id: resultado.id });
                         }
+
+                        setModalVisible(false);
                       }}
                     >
-                      <Text style={styles.anotacaoText}>
+                      <Text style={styles.resultText}>
                         {resultado.titulo}
                       </Text>
-                      {/* Usando o mesmo estilo */}
-                      <View style={styles.iconContainer}>
-                        <TouchableOpacity
-                          onPress={() => {
-                            // Verifica o tipo de nota e redireciona para a página de edição correspondente
-                            if (resultado.tipo === "financa") {
-                              handleDeleteItem(resultado.id, "financa")
-                              setModalVisible(false);
-                            } else if (resultado.tipo === "anotacao") {
-                              handleDeleteItem(resultado.id, "anotacao")
-                              setModalVisible(false);
-                            } else if (resultado.tipo === "checklist") {
-                              handleDeleteItem(resultado.id, "checklist")
-                              setModalVisible(false);
-                            }
-                          }}
-                        >
-                          <Icon name="trash" size={28} color="#EC4E4E" />
-                        </TouchableOpacity>
-                      </View>
+
+                      <TouchableOpacity
+                        onPress={() => {
+                          handleDeleteItem(resultado.id, resultado.tipo);
+                          setModalVisible(false);
+                        }}
+                      >
+                        <Icon name="trash" size={22} color="#EC4E4E" />
+                      </TouchableOpacity>
                     </TouchableOpacity>
                   ))}
-                </View>
+                </ScrollView>
               ) : (
-                <View style={{ alignContent: "center" }}>
-                  <Text style={styles.batataText}>
-                    Nenhum resultado encontrado
-                  </Text>
-                </View>
+                <Text style={styles.noResultsText}>
+                  Nenhum resultado encontrado
+                </Text>
               )}
-              {/* Botão para fechar o modal, agora alinhado ao fundo */}
-              <View style={styles.footer}>
-                <TouchableOpacity
-                  title="Fechar Modal"
-                  onPress={() => setModalVisible(false)}
-                  style={styles.closeButtonContainer}
-                >
-                  <Text style={styles.footerText}>Fechar</Text>
-                </TouchableOpacity>
-              </View>
-            </ScrollView>
+
+              <TouchableOpacity
+                style={styles.searchButtonModal}
+                onPress={() => {
+                  setModalVisible(false);
+                  setTitulos("");
+                  setResultados([]);
+                }}
+              >
+                <Text style={styles.searchButtonText}>
+                  Fechar
+                </Text>
+              </TouchableOpacity>
+
+            </View>
           </View>
         </Modal>
       </ScrollView>
@@ -445,6 +459,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#E2EDF2",
     paddingHorizontal: 20,
   },
+
   notesText: {
     fontSize: 24,
     color: "#255573",
@@ -452,6 +467,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginTop: 20,
   },
+
   financaContainer: {
     backgroundColor: "#C6DBE4",
     padding: 15,
@@ -462,15 +478,18 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
+
   financaText: {
     color: "#255573",
     fontSize: 18,
     fontFamily: "SuezOne_400Regular",
   },
+
   iconContainer: {
     flexDirection: "row",
     gap: 25,
   },
+
   batataText: {
     textAlign: "center",
     fontSize: 25,
@@ -478,6 +497,7 @@ const styles = StyleSheet.create({
     marginTop: "20%",
     fontFamily: "SuezOne_400Regular",
   },
+
   sectionTitle: {
     fontFamily: "SuezOne_400Regular",
     fontSize: 25,
@@ -485,6 +505,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 0,
   },
+
   sectionTitleTop: {
     fontFamily: "SuezOne_400Regular",
     fontSize: 25,
@@ -492,44 +513,7 @@ const styles = StyleSheet.create({
     marginTop: 0,
     marginBottom: 0,
   },
-  Botão_de_pesquisa: {
-    marginTop: 56,
-    fontSize: 18,
-    fontWeight: "bold",
-    fontStyle: "italic",
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    paddingLeft: 10,
-    marginBottom: 10,
-  },
-  resultadosContainer: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: "#f1f1f1",
-    borderRadius: 10,
-  },
-  resultadoItem: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-  },
-  resultadoText: {
-    fontSize: 18,
-    color: "#333",
-    fontWeight: "500",
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 10,
-    padding: 20,
-  },
+
   plusButtonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -537,6 +521,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     backgroundColor: "#E2EDF2",
   },
+
   plusButton: {
     backgroundColor: "#1F74A7",
     width: 60,
@@ -545,6 +530,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+
   closeButtonContainer: {
     backgroundColor: "#EC4E4E",
     paddingVertical: 15,
@@ -552,25 +538,29 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     flex: 1,
   },
+
   footer: {
     flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: 10,
     marginTop: "10%",
   },
+
   footerText: {
     color: "#FFF",
     fontSize: 18,
     textAlign: "center",
   },
+
   saveButton: {
-    backgroundColor: "#1F74A7", // Botão Salvar
+    backgroundColor: "#1F74A7",
     paddingVertical: 15,
     paddingHorizontal: 25,
     borderRadius: 8,
     flex: 1,
     marginRight: 10,
   },
+
   anotacaoContainer: {
     backgroundColor: "#C6DBE4",
     padding: 15,
@@ -581,28 +571,86 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
+
   anotacaoText: {
     color: "#255573",
     fontSize: 18,
     fontFamily: "SuezOne_400Regular",
   },
-  resultadosContainer: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: "#f1f1f1",
-    borderRadius: 10,
+
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    paddingHorizontal: 20,
   },
-  resultadoItem: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-    backgroundColor: "#C6DBE4", // Mesma cor de fundo para manter consistência
-    borderRadius: 10, // Manter borda arredondada igual
-    marginBottom: 10,
+
+  modalContent: {
+    backgroundColor: "#FFF",
+    borderRadius: 16,
+    padding: 20,
+    maxHeight: "80%",
   },
-  resultadoText: {
-    fontSize: 18,
+
+  modalTitle: {
+    fontSize: 20,
     color: "#255573",
-    fontWeight: "500",
+    fontFamily: "SuezOne_400Regular",
+    marginBottom: 16,
+    textAlign: "center",
+  },
+
+  searchInput: {
+    backgroundColor: "#E2EDF2",
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontSize: 16,
+    color: "#255573",
+    borderWidth: 1,
+    borderColor: "#B5CDD8",
+    marginBottom: 16,
+  },
+
+  searchButtonModal: {
+    backgroundColor: "#1F74A7",
+    paddingVertical: 12,
+    borderRadius: 10,
+    alignItems: "center",
+    marginBottom: 12,
+  },
+
+  searchButtonText: {
+    color: "#FFF",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+
+  resultsContainer: {
+    maxHeight: 300,
+  },
+
+  resultItem: {
+    backgroundColor: "#C6DBE4",
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+
+  resultText: {
+    fontSize: 16,
+    color: "#255573",
+    fontFamily: "SuezOne_400Regular",
+    maxWidth: "80%",
+  },
+
+  noResultsText: {
+    textAlign: "center",
+    color: "#255573",
+    fontSize: 16,
+    marginVertical: 20,
   },
 });

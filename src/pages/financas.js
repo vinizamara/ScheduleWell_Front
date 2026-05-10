@@ -167,9 +167,9 @@ export default function Financas() {
             <TouchableOpacity
               style={[
                 styles.frequencyButton,
-                financa.frequencia === "Diária" && styles.selectedButton,
+                financa.frequencia === "Diaria" && styles.selectedButton,
               ]}
-              onPress={() => handleInputChange("frequencia", "Diária")}
+              onPress={() => handleInputChange("frequencia", "Diaria")}
             >
               <Text style={styles.frequencyButtonText}>Diária</Text>
             </TouchableOpacity>
@@ -211,9 +211,9 @@ export default function Financas() {
             <TouchableOpacity
               style={[
                 styles.frequencyButton,
-                financa.frequencia === "Única" && styles.selectedButton,
+                financa.frequencia === "Unica" && styles.selectedButton,
               ]}
-              onPress={() => handleInputChange("frequencia", "Única")}
+              onPress={() => handleInputChange("frequencia", "Unica")}
             >
               <Text style={styles.frequencyButtonText}>Única</Text>
             </TouchableOpacity>

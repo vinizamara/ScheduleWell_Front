@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://schedulewell.westus.cloudapp.azure.com:5000/api/", // Remover espaço extra
+  baseURL: "https://schedulewell-api.onrender.com/api", // Remover espaço extra
   headers: {
     Accept: "application/json",
   },

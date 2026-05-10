@@ -17,17 +17,20 @@ import * as SplashScreen from "expo-splash-screen";
 import { useNavigation } from "@react-navigation/native";
 import * as Animatable from "react-native-animatable";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import sheets from "../axios/axios"; // Ajuste o caminho conforme necessário
+import sheets from "../axios/axios";
 
 export default function PerfilUsuario() {
   const navigation = useNavigation();
+
   const [modalProfileVisible, setModalProfileVisible] = useState(false);
   const [modalPasswordVisible, setModalPasswordVisible] = useState(false);
+
   const [userDefault, setUserDefault] = useState({
     nome: "",
     email: "",
     senha: "",
   });
+
   const [user, setUser] = useState(userDefault);
   const [confirmarSenha, setConfirmarSenha] = useState("");
   const [isPasswordVisible, setPasswordVisible] = useState(false);
@@ -39,9 +42,14 @@ export default function PerfilUsuario() {
 
   async function loadUserData() {
     await SplashScreen.preventAutoHideAsync();
+
     const userName = await AsyncStorage.getItem("userName");
     const userEmail = await AsyncStorage.getItem("userEmail");
-    if (userName && userEmail) setUser({ nome: userName, email: userEmail });
+
+    if (userName && userEmail) {
+      setUser({ nome: userName, email: userEmail });
+    }
+
     if (fontsLoaded) {
       await SplashScreen.hideAsync();
     }
@@ -54,7 +62,7 @@ export default function PerfilUsuario() {
   if (!fontsLoaded) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#2196F3" />
+        <ActivityIndicator size="large" color="#1F74A7" />
       </View>
     );
   }
@@ -71,6 +79,7 @@ export default function PerfilUsuario() {
     try {
       const userId = await AsyncStorage.getItem("userId");
       const response = await sheets.updateUser(userId, user);
+
       Alert.alert("Sucesso", response.data.message);
 
       await AsyncStorage.setItem("userName", user.nome);
@@ -78,46 +87,40 @@ export default function PerfilUsuario() {
 
       setModalProfileVisible(false);
     } catch (error) {
-      console.log(error.response);
-      if (error.response && error.response.data && error.response.data.error) {
-        Alert.alert("Erro", error.response.data.error);
-      } else {
-        Alert.alert("Erro", "Ocorreu um erro ao atualizar o perfil.");
-      }
+      Alert.alert(
+        "Atenção",
+        error.response?.data?.error || "Erro ao atualizar perfil"
+      );
     }
   };
 
   const handleSavePassword = async () => {
     if (user.senha !== confirmarSenha) {
-      Alert.alert("Erro", "As senhas não coincidem");
+      Alert.alert("Atenção", "As senhas não coincidem");
       return;
-    } else {
-      try {
-        const userId = await AsyncStorage.getItem("userId");
-        const response = await sheets.updateUser(userId, { senha: user.senha });
-        Alert.alert("Sucesso", response.data.message);
+    }
 
-        setModalPasswordVisible(false);
-        setConfirmarSenha("");
-      } catch (error) {
-        console.log(error.response);
-        if (error.response && error.response.data && error.response.data.error) {
-          Alert.alert("Erro", error.response.data.error);
-        } else {
-          Alert.alert("Erro", "Ocorreu um erro ao atualizar a senha.");
-        }
-      }
+    try {
+      const userId = await AsyncStorage.getItem("userId");
+      const response = await sheets.updateUser(userId, {
+        senha: user.senha,
+      });
+
+      Alert.alert("Sucesso", response.data.message);
+
+      setModalPasswordVisible(false);
+      setConfirmarSenha("");
+    } catch (error) {
+      Alert.alert(
+        "Atenção",
+        error.response?.data?.error || "Erro ao atualizar senha"
+      );
     }
   };
 
   const handleLogout = async () => {
-    await AsyncStorage.removeItem("authToken");
-    await AsyncStorage.removeItem("userLoggedIn");
-    await AsyncStorage.removeItem("userName");
-    await AsyncStorage.removeItem("userEmail");
-    await AsyncStorage.removeItem("userId");
+    await AsyncStorage.clear();
     navigation.navigate("PageInit");
-    console.log("Saiu do login");
   };
 
   const handleDeleteAccount = async () => {
@@ -132,62 +135,62 @@ export default function PerfilUsuario() {
       );
     });
 
-    if (confirm) {
-      try {
-        const userId = await AsyncStorage.getItem("userId");
-        const response = await sheets.deleteUser(userId);
-        await AsyncStorage.clear();
-        navigation.navigate("PageInit");
-        Alert.alert("Sucesso", response.data.message);
-      } catch (error) {
-        Alert.alert("Erro", error.response.data.error);
-      }
+    if (!confirm) return;
+
+    try {
+      const userId = await AsyncStorage.getItem("userId");
+      const response = await sheets.deleteUser(userId);
+
+      Alert.alert("Sucesso", response.data.message);
+
+      await AsyncStorage.clear();
+      navigation.navigate("PageInit");
+    } catch (error) {
+      Alert.alert(
+        "Atenção",
+        error.response?.data?.error || "Erro ao deletar conta"
+      );
     }
   };
 
-  const AnimatableTouchableOpacity =
-    Animatable.createAnimatableComponent(TouchableOpacity);
-
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.profileContainer}>
+      <View style={styles.profileCard}>
+
         <Image
           source={require("../../assets/icons/perfil.png")}
           style={styles.profileImage}
         />
 
         <Animatable.Text animation="fadeInDown" style={styles.title}>
-          Olá, {user.nome || "Nome do Usuário"}
+          Olá, {user.nome || "Usuário"}
         </Animatable.Text>
 
-        <View style={styles.buttonsContainer}>
+        <Text style={styles.subtitle}>{user.email}</Text>
+
+        <View style={styles.sectionButtons}>
           <TouchableOpacity
-            style={styles.button}
+            style={styles.primaryButton}
             onPress={() => setModalProfileVisible(true)}
           >
             <Text style={styles.buttonText}>Editar Perfil</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.button}
+            style={styles.primaryButton}
             onPress={() => setModalPasswordVisible(true)}
           >
             <Text style={styles.buttonText}>Alterar Senha</Text>
           </TouchableOpacity>
         </View>
 
-        <View style={styles.buttonsContainer}>
-          <TouchableOpacity
-            animation="bounceIn"
-            style={styles.button}
-            onPress={handleLogout}
-          >
+        <View style={styles.sectionButtons}>
+          <TouchableOpacity style={styles.secondaryButton} onPress={handleLogout}>
             <Text style={styles.buttonText}>Sair</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            animation="fadeInUp"
-            style={styles.deleteButton}
+            style={styles.dangerButton}
             onPress={handleDeleteAccount}
           >
             <Text style={styles.buttonText}>Deletar Conta</Text>
@@ -195,137 +198,76 @@ export default function PerfilUsuario() {
         </View>
       </View>
 
-      {/* Modal de edição de perfil */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalProfileVisible}
-        onRequestClose={() => setModalProfileVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalView}>
-            <ScrollView>
-              <Text style={styles.modalTitle}>Editar Perfil</Text>
+      {/* MODAL PERFIL */}
+      <Modal transparent visible={modalProfileVisible} animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalCard}>
+            <Text style={styles.modalTitle}>Editar Perfil</Text>
 
-              <Text style={styles.title}>Nome</Text>
-              <View style={styles.inputContainer}>
-                <TextInput
-                  style={styles.inputWithoutBorder}
-                  name="nome"
-                  value={user.nome}
-                  onChangeText={(text) => setUser({ ...user, nome: text })}
-                  placeholder="Insira seu nome"
-                />
-              </View>
+            <TextInput
+              style={styles.input}
+              placeholder="Nome"
+              value={user.nome}
+              onChangeText={(text) => setUser({ ...user, nome: text })}
+            />
 
-              <Text style={styles.title}>E-mail</Text>
-              <View style={styles.inputContainer}>
-                <TextInput
-                  style={styles.inputWithoutBorder}
-                  name="email"
-                  value={user.email}
-                  onChangeText={(text) => setUser({ ...user, email: text })}
-                  placeholder="Insira seu e-mail"
-                  keyboardType="email-address"
-                />
-              </View>
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              value={user.email}
+              onChangeText={(text) => setUser({ ...user, email: text })}
+            />
 
-              <View style={styles.modalButtonsContainer}>
-                <TouchableOpacity
-                  style={styles.modalButton}
-                  onPress={handleSaveProfile}
-                >
-                  <Text style={styles.modalButtonText}>Salvar</Text>
-                </TouchableOpacity>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity style={styles.saveButton} onPress={handleSaveProfile}>
+                <Text style={styles.buttonText}>Salvar</Text>
+              </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={[styles.modalButton, { backgroundColor: "#f44336" }]}
-                  onPress={() => {
-                    setModalProfileVisible(false);
-                    loadUserData();
-                  }}
-                >
-                  <Text style={styles.modalButtonText}>Cancelar</Text>
-                </TouchableOpacity>
-              </View>
-            </ScrollView>
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={() => setModalProfileVisible(false)}
+              >
+                <Text style={styles.buttonText}>Cancelar</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
 
-      {/* Modal de alteração de senha */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalPasswordVisible}
-        onRequestClose={() => setModalPasswordVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalView}>
-            <ScrollView>
-              <Text style={styles.modalTitle}>Alterar Senha</Text>
+      {/* MODAL SENHA */}
+      <Modal transparent visible={modalPasswordVisible} animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalCard}>
+            <Text style={styles.modalTitle}>Alterar Senha</Text>
 
-              <Text style={styles.title}>Nova Senha</Text>
-              <View style={styles.inputContainer}>
-                <TextInput
-                  placeholder="Insira sua nova senha"
-                  style={styles.inputWithoutBorder}
-                  secureTextEntry={!isPasswordVisible}
-                  value={user.senha}
-                  onChangeText={(text) => setUser({ ...user, senha: text })}
-                />
-                <TouchableOpacity
-                  style={styles.iconContainer}
-                  onPress={togglePasswordVisibility}
-                >
-                  <Ionicons
-                    name={isPasswordVisible ? "eye-off" : "eye"}
-                    size={24}
-                    color="gray"
-                  />
-                </TouchableOpacity>
-              </View>
+            <TextInput
+              style={styles.input}
+              placeholder="Nova senha"
+              secureTextEntry
+              value={user.senha}
+              onChangeText={(text) => setUser({ ...user, senha: text })}
+            />
 
-              <Text style={styles.title}>Confirmar Senha</Text>
-              <View style={styles.inputContainer}>
-                <TextInput
-                  placeholder="Confirme sua nova senha"
-                  style={styles.inputWithoutBorder}
-                  secureTextEntry={!isConfirmPasswordVisible}
-                  value={confirmarSenha}
-                  onChangeText={(text) => setConfirmarSenha(text)}
-                />
-                <TouchableOpacity
-                  style={styles.iconContainer}
-                  onPress={toggleConfirmPasswordVisibility}
-                >
-                  <Ionicons
-                    name={isConfirmPasswordVisible ? "eye-off" : "eye"}
-                    size={24}
-                    color="gray"
-                  />
-                </TouchableOpacity>
-              </View>
+            <TextInput
+              style={styles.input}
+              placeholder="Confirmar senha"
+              secureTextEntry
+              value={confirmarSenha}
+              onChangeText={setConfirmarSenha}
+            />
 
-              <View style={styles.modalButtonsContainer}>
-                <TouchableOpacity
-                  style={styles.modalButton}
-                  onPress={handleSavePassword}
-                >
-                  <Text style={styles.modalButtonText}>Salvar</Text>
-                </TouchableOpacity>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity style={styles.saveButton} onPress={handleSavePassword}>
+                <Text style={styles.buttonText}>Salvar</Text>
+              </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={[styles.modalButton, { backgroundColor: "#f44336" }]}
-                  onPress={() => {
-                    setModalPasswordVisible(false);
-                    setConfirmarSenha("");
-                  }}
-                >
-                  <Text style={styles.modalButtonText}>Cancelar</Text>
-                </TouchableOpacity>
-              </View>
-            </ScrollView>
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={() => setModalPasswordVisible(false)}
+              >
+                <Text style={styles.buttonText}>Cancelar</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
@@ -335,119 +277,127 @@ export default function PerfilUsuario() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: "#E2EDF2",
-    justifyContent: "center",
+    padding: 20,
     alignItems: "center",
   },
-  profileContainer: {
+
+  profileCard: {
+    width: "100%",
+    backgroundColor: "#C6DBE4",
+    borderRadius: 16,
+    padding: 20,
     alignItems: "center",
-    marginVertical: 20,
+    elevation: 4,
   },
+
   profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 20,
+    width: 110,
+    height: 110,
+    borderRadius: 55,
+    marginBottom: 12,
   },
+
   title: {
-    fontFamily: "SuezOne_400Regular",
-    fontSize: 20,
+    fontSize: 22,
     color: "#255573",
+    fontFamily: "SuezOne_400Regular",
     textAlign: "center",
   },
-  buttonsContainer: {
+
+  subtitle: {
+    fontSize: 14,
+    color: "#255573",
+    marginBottom: 15,
+  },
+
+  sectionButtons: {
     flexDirection: "row",
-    justifyContent: "space-around",
-    width: "100%",
-    marginVertical: 10,
+    gap: 10,
+    marginTop: 10,
   },
-  button: {
+
+  primaryButton: {
     backgroundColor: "#1F74A7",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    margin: 5,
-    width: "40%",
+    padding: 10,
+    borderRadius: 10,
+    flex: 1,
   },
+
+  secondaryButton: {
+    backgroundColor: "#255573",
+    padding: 10,
+    borderRadius: 10,
+    flex: 1,
+  },
+
+  dangerButton: {
+    backgroundColor: "#EC4E4E",
+    padding: 10,
+    borderRadius: 10,
+    flex: 1,
+  },
+
   buttonText: {
     color: "#FFF",
-    fontSize: 16,
-    fontWeight: "bold",
-    fontFamily: "SuezOne_400Regular",
     textAlign: "center",
+    fontWeight: "bold",
   },
-  deleteButton: {
-    backgroundColor: "#f44336",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    margin: 5,
-    width: "40%",
+
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    padding: 20,
   },
+
+  modalCard: {
+    backgroundColor: "#FFF",
+    borderRadius: 16,
+    padding: 20,
+  },
+
+  modalTitle: {
+    fontSize: 20,
+    color: "#255573",
+    marginBottom: 15,
+    fontFamily: "SuezOne_400Regular",
+  },
+
+  input: {
+    borderWidth: 1,
+    borderColor: "#B5CDD8",
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 10,
+    backgroundColor: "#E2EDF2",
+  },
+
+  modalButtons: {
+    flexDirection: "row",
+    gap: 10,
+    marginTop: 10,
+  },
+
+  saveButton: {
+    backgroundColor: "#1F74A7",
+    flex: 1,
+    padding: 10,
+    borderRadius: 10,
+  },
+
+  cancelButton: {
+    backgroundColor: "#EC4E4E",
+    flex: 1,
+    padding: 10,
+    borderRadius: 10,
+  },
+
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#E2EDF2",
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalView: {
-    width: "80%",
-    backgroundColor: "white",
-    borderRadius: 10,
-    padding: 20,
-    alignItems: "center",
-  },
-  modalTitle: {
-    fontFamily: "SuezOne_400Regular",
-    fontSize: 24,
-    color: "#255573",
-    marginBottom: 20,
-  },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderBottomWidth: 1,
-    marginBottom: 12,
-    width: "100%",
-  },
-  inputWithoutBorder: {
-    fontFamily: "SuezOne_400Regular",
-    height: 40,
-    fontSize: 16,
-    paddingHorizontal: 8,
-    flex: 1,
-  },
-  eyeIcon: {
-    position: "absolute",
-    right: 10,
-  },
-  modalButtonsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-    marginTop: 20,
-  },
-  modalButton: {
-    backgroundColor: "#1F74A7",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    marginHorizontal: 5,
-    flex: 1,
-  },
-  modalButtonText: {
-    color: "#FFF",
-    fontSize: 16,
-    fontWeight: "bold",
-    fontFamily: "SuezOne_400Regular",
-    textAlign: "center",
-  },
 });
-
