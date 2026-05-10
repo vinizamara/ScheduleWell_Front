@@ -62,7 +62,6 @@ export default function Login() {
         await AsyncStorage.setItem("userName", userName);
         await AsyncStorage.setItem("userEmail", userEmail);
         await AsyncStorage.setItem("userId", userId.toString());
-        console.log("Dados salvos com sucesso!");
       } catch (e) {
         console.error("Erro ao armazenar dados no AsyncStorage:", e);
       }

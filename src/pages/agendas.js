@@ -113,10 +113,6 @@ export default function Escolhanotas() {
   };
 
   useEffect(() => {
-    console.log("Resultados atualizados:", resultados);
-  }, [resultados]);
-
-  useEffect(() => {
     if (isFocused) {
       checkLoginStatus();
     }

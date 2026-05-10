@@ -34,7 +34,6 @@ export default function Financas() {
     const fetchUserId = async () => {
       try {
         const storedUserId = await AsyncStorage.getItem("userId");
-        console.log("User ID recuperado:", storedUserId); // Log do userId
         setUserId(storedUserId ? parseInt(storedUserId) : null); // Converte para número se não for null
       } catch (error) {
         console.error(

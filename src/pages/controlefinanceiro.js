@@ -78,11 +78,6 @@ export default function ControleFinanceiro() {
         const financeiroResponse =
           await sheets.resumoFinanceiro(id);
 
-        console.log(
-          "financeiroResponse:",
-          financeiroResponse.data
-        );
-
         const financeiroData =
           financeiroResponse.data;
 
@@ -115,11 +110,6 @@ export default function ControleFinanceiro() {
         const rendaTotalResponse =
           await sheets.obterRendaTotal(id);
 
-        console.log(
-          "rendaTotalResponse:",
-          rendaTotalResponse.data
-        );
-
         const rendaTotalData =
           rendaTotalResponse.data;
 
@@ -139,11 +129,6 @@ export default function ControleFinanceiro() {
       try {
         const transacoesResponse =
           await sheets.transacoes(id);
-
-        console.log(
-          "transacoesResponse:",
-          transacoesResponse.data
-        );
 
         const transacoesData =
           transacoesResponse.data;
@@ -172,16 +157,6 @@ export default function ControleFinanceiro() {
       setLoading(false);
     }
   };
-
-useFocusEffect(
-  React.useCallback(() => {
-    console.log(
-      "TELA CONTROLE FINANCEIRO RECEBEU FOCO"
-    );
-
-    fetchData();
-  }, [])
-);
 
   useFocusEffect(
     React.useCallback(() => {
