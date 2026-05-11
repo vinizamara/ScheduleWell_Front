@@ -25,15 +25,45 @@ O sistema integra organização pessoal e controle financeiro em uma única apli
 - Filtros por período (hoje, 7 dias e 30 dias)
 - Busca de anotações e transações por título
 
-## Tecnologias Utilizadas 🧰
+## Screenshots 📸
 
-- React Native (JavaScript) – desenvolvimento mobile
-- Expo (Expo Go / EAS Build) – execução e build da aplicação
-- React Navigation (Stack e Bottom Tabs) – navegação entre telas
-- Axios – comunicação com API REST
-- AsyncStorage – persistência local de dados do usuário
-- Date-fns – manipulação e formatação de datas
-- React Native Animatable – animações de interface
+<p align="center">
+  <img src="./assets/readmeImages/telaInicial.jpeg" width="30%"/>
+  <img src="./assets/readmeImages/login.jpeg" width="30%"/>
+  <img src="./assets/readmeImages/telaHome.jpeg" width="30%"/>
+</p>
+
+<p align="center">
+  <img src="./assets/readmeImages/perfil.jpeg" width="30%"/>
+  <img src="./assets/readmeImages/tipoNotas.jpeg" width="30%"/>
+  <img src="./assets/readmeImages/anotacaoTexto.jpeg" width="30%"/>
+</p>
+
+<p align="center">
+  <img src="./assets/readmeImages/listagem.jpeg" width="30%"/>
+  <img src="./assets/readmeImages/financa.jpeg" width="30%"/>
+  <img src="./assets/readmeImages/controleFinanceiro.jpeg" width="30%"/>
+</p>
+
+## Tecnologias e Ferramentas Utilizadas 🧰
+
+<p align="left">
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" height="35" />
+
+  <img src="https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" height="35" />
+
+  <img src="https://img.shields.io/badge/Expo-1B1F23?style=for-the-badge&logo=expo&logoColor=white" height="35" />
+
+  <img src="https://img.shields.io/badge/React_Navigation-6C47FF?style=for-the-badge&logo=react&logoColor=white" height="35" />
+
+  <img src="https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white" height="35" />
+
+  <img src="https://img.shields.io/badge/AsyncStorage-333333?style=for-the-badge&logo=react&logoColor=61DAFB" height="35" />
+
+  <img src="https://img.shields.io/badge/date--fns-770C56?style=for-the-badge&logo=javascript&logoColor=white" height="35" />
+
+  <img src="https://img.shields.io/badge/React_Native_Animatable-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" height="35" />
+</p>
 
 ## Arquitetura do Projeto 🏗️
 
@@ -65,6 +95,13 @@ A aplicação consome uma API REST responsável pelo gerenciamento de usuários,
 - Navegação gerenciada pelo React Navigation
 - Comunicação baseada em arquitetura cliente-servidor (REST)
 
+### Repositório da API
+
+O backend utilizado neste projeto foi desenvolvido separadamente como parte do mesmo Trabalho de Conclusão de Curso.
+
+- API REST: [ScheduleWell API](https://github.com/vinizamara/ScheduleWell_API)
+- Tecnologias utilizadas: Node.js, Express, JWT, MySQL e Docker.
+
 ## APK / Download 📦
 
 - APK: [Download da versão v1.0.0](https://github.com/vinizamara/ScheduleWell_Front/releases/tag/v1.0.0)
@@ -75,26 +112,6 @@ A aplicação consome uma API REST responsável pelo gerenciamento de usuários,
 2. Baixe o arquivo `.apk` mais recente
 3. Ative instalação de fontes desconhecidas no Android (se necessário)
 4. Instale o aplicativo
-
-## Screenshots 📸
-
-<p align="center">
-  <img src="./assets/readmeImages/telaInicial.jpeg" width="30%"/>
-  <img src="./assets/readmeImages/login.jpeg" width="30%"/>
-  <img src="./assets/readmeImages/telaHome.jpeg" width="30%"/>
-</p>
-
-<p align="center">
-  <img src="./assets/readmeImages/perfil.jpeg" width="30%"/>
-  <img src="./assets/readmeImages/tipoNotas.jpeg" width="30%"/>
-  <img src="./assets/readmeImages/anotacaoTexto.jpeg" width="30%"/>
-</p>
-
-<p align="center">
-  <img src="./assets/readmeImages/listagem.jpeg" width="30%"/>
-  <img src="./assets/readmeImages/financa.jpeg" width="30%"/>
-  <img src="./assets/readmeImages/controleFinanceiro.jpeg" width="30%"/>
-</p>
 
 ## Como Rodar o Projeto 🚀
 
@@ -113,6 +130,25 @@ cd ScheduleWell_Front
 npm install
 ```
 
+### Ambiente de API
+
+O aplicativo está atualmente configurado para consumir uma API hospedada em nuvem, utilizada para demonstração e execução da aplicação em ambiente de produção.
+
+Também é possível executar o projeto utilizando uma instância local do backend.
+
+Para isso, altere a URL da API no arquivo:
+```bash
+config/URL_API.js
+```
+
+Exemplo de configuração local:
+```bash
+export const API_URL = "http://SEU_IP:5000/api";
+```
+Em dispositivos físicos, utilize o IP local da máquina em vez de localhost.
+
+Certifique-se de que o backend esteja em execução e acessível pela mesma rede do dispositivo ou emulador.
+
 ### Execução
 ```bash
 npx expo start
@@ -125,16 +161,6 @@ Este projeto foi desenvolvido em equipe durante a fase acadêmica no SENAI.
 Os colaboradores abaixo participaram diretamente do desenvolvimento original (repositório inicial no GitLab):
 
 <div align="left">
-
-  <h3>- Gabriel Santos Magalhães</h3>
-  <a href="https://gitlab.com/gabrielsantosmagalhaesx" target="_blank">
-    <img src="https://img.shields.io/static/v1?message=Gabriel%20Santos%20Magalh%C3%A3es&label=&color=FC6D26&logo=gitlab&logoColor=white&style=for-the-badge" height="35" />
-  </a>
-
-  <h3>- Maria Laura Reis Furini</h3>
-  <a href="https://gitlab.com/marialaurareisfurini" target="_blank">
-    <img src="https://img.shields.io/static/v1?message=Maria%20Laura%20Reis%20Furini&label=&color=FC6D26&logo=gitlab&logoColor=white&style=for-the-badge" height="35" />
-  </a>
 
   <h3>- Gabriel Santos Magalhães</h3>
   <a href="https://gitlab.com/gabrielsantosmagalhaesx" target="_blank">
