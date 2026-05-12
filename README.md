@@ -92,7 +92,6 @@ A aplicação consome uma API REST responsável pelo gerenciamento de usuários,
 - Requisições HTTP realizadas via Axios
 - Consumo centralizado em `src/axios/`
 - URL base configurada em `config/URL_API.js`
-- Navegação gerenciada pelo React Navigation
 - Comunicação baseada em arquitetura cliente-servidor (REST)
 
 ### Repositório da API
@@ -158,7 +157,7 @@ npx expo start
 
 Este projeto foi desenvolvido em equipe durante a fase acadêmica no SENAI.
 
-Os colaboradores abaixo participaram diretamente do desenvolvimento original (repositório inicial no GitLab):
+Os colaboradores abaixo participaram diretamente do desenvolvimento original ([repositório inicial no GitLab](https://gitlab.com/schedulewell/new-project)):
 
 <div align="left">
 
