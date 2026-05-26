@@ -69,7 +69,7 @@ O sistema integra organização pessoal e controle financeiro em uma única apli
 
 O projeto foi estruturado de forma modular, com separação de responsabilidades entre configuração, serviços, componentes, rotas e telas.
 
-### Estrutura de pastas 📁
+### Estrutura de pastas 
 
 - **assets/** – imagens, logos e ícones do aplicativo
 - **config/** – configurações globais (ex: URL da API)
@@ -78,7 +78,7 @@ O projeto foi estruturado de forma modular, com separação de responsabilidades
 - **src/pages/** – telas principais do aplicativo
 - **src/routes/** – configuração das rotas de navegação
 
-### Arquivos principais 📌
+### Arquivos principais 
 
 - **App.js** – ponto de entrada da aplicação
 - **babel.config.js** – configuração do Babel
